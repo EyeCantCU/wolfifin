@@ -56,7 +56,7 @@ renovate:
 
 build-containerfile:
     sudo docker build \
-        -t wolfi-bootc:latest .
+        -t wolfi-bootc:latest -f ./Containerfile .
 
 build-apko $yaml="apko.yaml" $tag="wolfi-bootc:latest":
     mkdir -p ./output/oci
