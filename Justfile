@@ -20,7 +20,7 @@ create-cache-dir:
     mkdir -p ./.cache/workspace
 
 keygen *$ARGS:
-    docker run --rm -it -v "${PWD}:/work:Z" -w /work \
+    podman run --rm -it -v "${PWD}:/work:Z" -w /work \
         "${MELANGE_IMAGE}" \
         keygen $ARGS
 
@@ -55,8 +55,8 @@ renovate:
     GITHUB_COM_TOKEN=$(cat ~/.ssh/gh_renovate) LOG_LEVEL=${LOG_LEVEL:-debug} renovate --platform=local
 
 build-containerfile:
-    sudo docker build \
-        -t wolfi-bootc:latest -f ./Containerfile .
+    sudo podman build \
+        -t wolfi-bootc:latest .
 
 build-apko $yaml="apko.yaml" $tag="wolfi-bootc:latest":
     mkdir -p ./output/oci
@@ -68,7 +68,7 @@ build-apko $yaml="apko.yaml" $tag="wolfi-bootc:latest":
     sudo skopeo copy oci:./output/oci/ containers-storage:${tag}
 
 bootc *ARGS:
-    sudo docker run \
+    sudo podman run \
         --rm --privileged --pid=host \
         -it \
         -v /sys/fs/selinux:/sys/fs/selinux \
