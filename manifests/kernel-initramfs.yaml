@@ -2,8 +2,8 @@
 
 package:
   name: kernel-initramfs
-  version: 6.15.6
-  epoch: 1
+  version: 6.17.3
+  epoch: 0
   description: The Linux kernel initramfs
   copyright:
     - license: GPL-2.0

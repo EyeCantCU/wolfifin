@@ -2,8 +2,8 @@
 
 package:
   name: kernel
-  version: 6.15.6
-  epoch: 2
+  version: 6.17.3
+  epoch: 0
   description: The Linux kernel
   copyright:
     - license: GPL-2.0
@@ -40,7 +40,7 @@ pipeline:
     with:
       repository: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
       tag: v${{package.version}}
-      expected-commit: 1562d948232546cfad45a1beddc70fe0c7b34950
+      expected-commit: f4b756a52c29ce3909c06bba248acf31d1276597
 
   - runs: mv config-${{build.arch}}* .config
 

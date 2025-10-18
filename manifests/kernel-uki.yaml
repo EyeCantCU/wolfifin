@@ -2,8 +2,8 @@
 
 package:
   name: kernel-uki
-  version: 6.15.6
-  epoch: 2
+  version: 6.17.3
+  epoch: 0
   description: Unified Kernel Image (UKI) for the Linux kernel
   target-architecture:
     - x86_64
