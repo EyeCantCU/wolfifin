@@ -1,7 +1,7 @@
 package:
   name: bootupd
-  version: 0.2.29
-  epoch: 2
+  version: 0.2.31
+  epoch: 0
   description: Bootloader updater
   copyright:
     - license: Apache-2.0
@@ -14,10 +14,13 @@ environment:
 pipeline:
   - uses: git-checkout
     with:
-      repository: https://github.com/p5/coreos-bootupd.git
-      # tag: v${{package.version}}
-      branch: sdboot-support
-      expected-commit: 23d044ce9533823cf0dbf4168122b9c25d918df5
+      repository: https://github.com/coreos/bootupd.git
+      tag: v${{package.version}}
+      expected-commit: de779db5376f692b314a0b447d700db5b42cc6b1
+
+  - uses: patch
+    with:
+      patches: systemd-boot.patch
 
   - uses: cargo/build
     with:
