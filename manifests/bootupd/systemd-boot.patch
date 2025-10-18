@@ -1,7 +1,7 @@
-From a3fa92bd737b1e96ebba653ca60014446029df1f Mon Sep 17 00:00:00 2001
+From b63c79c6fef604884323dd8580a3499649daf00d Mon Sep 17 00:00:00 2001
 From: Robert Sturla <robertsturla@outlook.com>
 Date: Fri, 29 Aug 2025 22:52:00 +0100
-Subject: [PATCH] feat: add systemd-boot support
+Subject: [PATCH] [PATCH] feat: add systemd-boot support
 
 Signed-off-by: Robert Sturla <robertsturla@outlook.com>
 Signed-off-by: RJ Sampson <rj.sampson@chainguard.dev>
@@ -12,10 +12,10 @@ Signed-off-by: RJ Sampson <rj.sampson@chainguard.dev>
  src/bios.rs               |  1 +
  src/bootupd.rs            | 87 ++++++++++++++++++++++++++++++++++++---
  src/component.rs          |  1 +
- src/efi.rs                | 43 ++++++++++++++-----
+ src/efi.rs                | 45 +++++++++++++++-----
  src/main.rs               |  3 ++
  src/systemdbootconfigs.rs | 61 +++++++++++++++++++++++++++
- 9 files changed, 208 insertions(+), 23 deletions(-)
+ 9 files changed, 210 insertions(+), 23 deletions(-)
  create mode 100644 build.rs
  create mode 100644 src/systemdbootconfigs.rs
 
@@ -263,7 +263,7 @@ index 8c3ec3c..e3b752d 100644
  
      /// Implementation of `bootupd generate-update-metadata` for a given component.
 diff --git a/src/efi.rs b/src/efi.rs
-index 25d6ccd..f523273 100644
+index 25d6ccd..c96cedb 100644
 --- a/src/efi.rs
 +++ b/src/efi.rs
 @@ -22,7 +22,7 @@ use rustix::{fd::AsFd, fd::BorrowedFd, fs::StatVfsMountFlags};
@@ -304,20 +304,24 @@ index 25d6ccd..f523273 100644
          // Let's attempt to use an already mounted ESP at the target
          // dest_root if one is already mounted there in a known ESP location.
          let destpath = if let Some(destdir) = self.get_mounted_esp(Path::new(dest_root))? {
-@@ -393,6 +389,33 @@ impl Component for Efi {
+@@ -393,6 +389,35 @@ impl Component for Efi {
              self.mount_esp_device(Path::new(dest_root), Path::new(&esp_device))?
          };
  
++        let src_dir = openat::Dir::open(src_root)
++            .with_context(|| format!("opening source directory {src_root}"))?;
++
 +        match bootloader {
 +            #[cfg(feature = "systemd-boot")]
 +            Bootloader::SystemdBoot => {
 +                log::info!("Installing systemd-boot via bootctl");
 +                let esp_dir = openat::Dir::open(&destpath)?;
-+                crate::systemdbootconfigs::install(src_root, &esp_dir)?;
++                crate::systemdbootconfigs::install(&src_dir, &esp_dir)?;
 +                return Ok(InstalledContent {
 +                    meta: ContentMetadata {
 +                        timestamp: Utc::now(),
 +                        version: "systemd-boot".to_string(),
++                        versions: None,
 +                    },
 +                    filetree: None,
 +                    adopted_from: None,
@@ -326,8 +330,6 @@ index 25d6ccd..f523273 100644
 +            _ => {}
 +        }
 +
-+        let src_dir = openat::Dir::open(src_root)
-+            .with_context(|| format!("opening source directory {src_root}"))?;
 +        let Some(meta) = get_component_update(&src_dir, self)? else {
 +            anyhow::bail!("No update metadata for component {} found", self.name());
 +        };
