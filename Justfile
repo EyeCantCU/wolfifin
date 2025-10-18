@@ -46,8 +46,6 @@ build-tree:
     just build composefs-rs
     just build dracut
 
-    just build py3-pefile
-    just build systemd
     just build kernel
     just build kernel-initramfs
     just build kernel-uki

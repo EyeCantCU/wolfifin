@@ -3,7 +3,7 @@
 package:
   name: kernel-uki
   version: 6.15.6
-  epoch: 1
+  epoch: 2
   description: Unified Kernel Image (UKI) for the Linux kernel
   target-architecture:
     - x86_64
@@ -23,9 +23,8 @@ environment:
       - kernel
       - kernel-modules
       - kernel-initramfs
+      - systemd
       - systemd-ukify
-      - systemd-uki-tools
-      - systemd-measure
       - python3
       - dracut
       - kmod
