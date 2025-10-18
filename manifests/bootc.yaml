@@ -1,6 +1,6 @@
 package:
   name: bootc
-  version: 1.5.1
+  version: 1.9.0
   epoch: 0
   description: Boot and upgrade via container images
   copyright:
@@ -23,8 +23,8 @@ pipeline:
   - uses: git-checkout
     with:
       repository: https://github.com/bootc-dev/bootc.git
-      branch: composefs-backend
-      expected-commit: 54e254cf1dc4925285f717353dc769b345ba149e
+      tag: v${{package.version}}
+      expected-commit: 7ad66dbfe3efaf827f4d3b29b4796b38f3d893dc
 
   - uses: patch
     with:
