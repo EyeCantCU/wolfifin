@@ -1,6 +1,6 @@
 package:
   name: composefs-rs
-  version: 0_git20250721
+  version: 0_git20251018
   epoch: 0
   description: Boot and upgrade via container images
   copyright:
@@ -16,7 +16,7 @@ pipeline:
     with:
       repository: https://github.com/containers/composefs-rs.git
       branch: main
-      expected-commit: 50991e3b00babaa867c594a6f0fb193b0684537e
+      expected-commit: f3cdb75924597ce9ffa1cc48d6e4e011e02f333d
 
   - uses: cargo/build
     with:
