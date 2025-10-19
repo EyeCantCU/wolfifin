@@ -4,11 +4,11 @@ COPY ./packages /packages
 
 FROM cgr.dev/chainguard/wolfi-base AS builder
 
-RUN --mount=type=bind,from=ctx,source=/packages,target=/repo \
-    apk add --allow-untrusted \
-        -X /repo \
-        -X https://packages.wolfi.dev/os \
-        -U --initdb -p /mnt \
+RUN --mount=type=bind,from=ctx,source=/packages,target=/repo <<EOF
+apk add -p /mnt \
+  --allow-untrusted -U --initdb \
+  -X https://apk.cgr.dev/chainguard \
+  -X /repo \
     ostree \
     composefs \
     bootc \
@@ -47,18 +47,21 @@ RUN --mount=type=bind,from=ctx,source=/packages,target=/repo \
     dbus-glib \
     glib \
     shadow
+EOF
 
 # Turn the pacstrapped rootfs into a container image.
 FROM scratch
 COPY --from=builder /mnt /
 
 # Alter root file structure a bit for ostree
-RUN mkdir -p /boot /sysroot && \
-    rm -rf /var/log /home /root /usr/local /srv && \
-    ln -s /var/home /home && \
-    ln -s /var/roothome /root && \
-    ln -s /var/usrlocal /usr/local && \
-    ln -s /var/srv /srv
+RUN <<EOF
+mkdir -p /boot /sysroot
+rm -rf /var/log /home /root /usr/local /srv
+ln -s /var/home /home
+ln -s /var/roothome /root
+ln -s /var/usrlocal /usr/local
+ln -s /var/srv /srv
+EOF
 
 # Setup a temporary root passwd (changeme) for dev purposes
 # TODO: Replace this for a more robust option when in prod
