@@ -1,6 +1,6 @@
 package:
   name: ostree
-  version: "2025.4"
+  version: "2025.6"
   epoch: 0
   description: "Operating system and container binary deployment and upgrades"
   copyright:
@@ -28,7 +28,7 @@ pipeline:
     with:
       repository: https://github.com/ostreedev/ostree.git
       tag: v${{package.version}}
-      expected-commit: 1a9350c94395cf743fc43e715931998fd67c520b
+      expected-commit: 82185d9aaf0a79b100378f13a54c3d5d3763a971
 
   - runs: env NOCONFIGURE=1 ./autogen.sh
 
